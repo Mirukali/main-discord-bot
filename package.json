@@ -1,0 +1,28 @@
+{
+  "name": "modmail",
+  "version": "1.0.0",
+  "description": "Mine & Chill Modmail Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mirukali/main-discord-bot.git"
+  },
+  "keywords": [
+    "modmail",
+    "discord-bot"
+  ],
+  "author": "Alikuxac",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mirukali/main-discord-bot/issues"
+  },
+  "homepage": "https://github.com/Mirukali/main-discord-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
+    "dotenv": "^8.2.0"
+  }
+}
