@@ -1,7 +1,7 @@
 {
-  "name": "modmail",
-  "version": "1.0.0",
-  "description": "Mine & Chill Modmail Bot",
+  "name": "main-discord-bot",
+  "version": "1.0.1",
+  "description": "Mine & Chill Official Bot",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
