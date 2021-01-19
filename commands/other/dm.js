@@ -9,6 +9,11 @@ class DMCMD extends Command {
             memberName: 'dm',
             description: 'Reply an user with message',
             aliases: [],
+            guildOnly: true,
+            throttling: {
+                usages: 2,
+                duration: 60,
+            },
             args: [
                 {
                     key: 'dmmember',
@@ -24,7 +29,7 @@ class DMCMD extends Command {
         });
     }
     run(message, { dmmember, msg }) {
-        // Check if user has specific role
+        // Check if user has Staff role or Administrator Permission
         let perm = message.member.roles.cache.has('657240378562445333') || message.mem.roles.hasPermission('ADMINISTRATOR');
         if (!perm) return message.reply("You don't have specific role to run this command.");
         if (!dmmember) return message.reply('User not found. Please try again.');
