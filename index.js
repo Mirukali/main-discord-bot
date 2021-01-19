@@ -14,7 +14,7 @@ const client = global.client = new Commando.Client({
 });
 
 new Commando.FriendlyError(
-    'Có lỗi xảy ra vui lòng liên hệ Admin: lexson270400@gmail.com'
+    'Please contact Owner: lexson270400@gmail.com'
 );
 
 client.login(TOKEN);
