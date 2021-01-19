@@ -1,6 +1,6 @@
 {
   "name": "main-discord-bot",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Mine & Chill Official Bot",
   "main": "index.js",
   "scripts": {
