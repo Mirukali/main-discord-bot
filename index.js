@@ -2,9 +2,11 @@
 require("dotenv").config();
 const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
+const mysql = require('mysql2/promise');
+const mysqlProvider = require('commando-provider-mysql')
 const fs = require('fs');
 const path = require('path');
-const { TOKEN, PREFIX } = process.env;
+const { TOKEN, PREFIX, MYSQL_HOST, MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_DATABASE } = process.env;
 const command_group = require('./config/command_group');
 
 const client = global.client = new Commando.Client({
@@ -12,6 +14,16 @@ const client = global.client = new Commando.Client({
     owner: ['289018503606960128', '337071802373242892'],
     invite: 'https://discord.gg/8yfv46W',
 });
+
+mysql.createConnection({
+	host: MYSQL_HOST,
+	user: MYSQL_USERNAME,
+	password: MYSQL_PASSWORD,
+	database: MYSQL_DATABASE
+}).then((db) => {
+    console.log('Database connected.');
+	client.setProvider(new mysqlProvider(db))
+})
 
 new Commando.FriendlyError(
     'Please contact Owner: lexson270400@gmail.com'

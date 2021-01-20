@@ -21,9 +21,11 @@
   },
   "homepage": "https://github.com/Mirukali/main-discord-bot#readme",
   "dependencies": {
+    "commando-provider-mysql": "^1.0.1",
     "discord.js": "^12.5.1",
     "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
     "dotenv": "^8.2.0",
+    "mysql2": "^2.2.5",
     "nekos.life": "^2.0.7"
   }
 }
