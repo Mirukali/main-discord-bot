@@ -8,8 +8,9 @@ module.exports = async (client) => {
         .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
         .catch(console.error);
 
+    // Automatic check update from repository every 30s.
     setInterval(() => {
-        exec(`git pull`, (error, stdout) => {
+        exec(`git pull origin master`, (error, stdout) => {
             let response = (error || stdout);
             if (!error) {
                 if (response.includes("Already up to date.")) {
