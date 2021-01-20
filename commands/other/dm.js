@@ -1,14 +1,13 @@
 const Command = require('../../structures/Command');
 
-const rolelist = ["657757704084914196", "655432735950897163", "657240378562445333"]; // Founder - Owner - Staff
-class DMCMD extends Command {
+class DMSCMD extends Command {
     constructor(client) {
         super(client, {
-            name: 'dm',
+            name: 'dms',
             group: 'other',
-            memberName: 'dm',
+            memberName: 'dms',
             description: 'Reply an user with message',
-            aliases: [],
+            aliases: ['dm'],
             guildOnly: true,
             throttling: {
                 usages: 2,
@@ -47,4 +46,4 @@ class DMCMD extends Command {
     }
 }
 
-module.exports = DMCMD;
+module.exports = DMSCMD;
