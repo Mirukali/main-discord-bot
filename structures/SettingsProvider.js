@@ -1,4 +1,5 @@
 const SettingProvider = require('discord.js-commando').SettingProvider;
+const { User } = require('discord.js');
 
 /**
     * Uses an MySQL database to store settings with guilds
@@ -20,18 +21,33 @@ class MySQLProvider extends SettingProvider {
         this.settings = new Map();
 
         /**
+         * User Settings cached in memory, Mapped by user ID
+         * @type {Map}
+         * @private
+         */
+        this.users = new Map();
+
+        /**
+         * Global bot settings in memory
+         * @type {Map}
+         * @private
+         */
+        this.botSettings = new Map();
+        /**
          * Listeners on the Client, mapped by the event name
          * @type {Map}
          * @private
          */
-        this.listener = new Map();
+        this.listeners = new Map();
+
+        this.isReady = false;
     }
 
     async init(client) {
         this.client = client;
 
         // Settings
-        await this.db.execute('CREATE TABLE IF NOT EXISTS `settings` (`guild` VARCHAR(250) NOT NULL, `settings` TEXT NOT NULL , PRIMARY KEY (`guild`))')
+        await this.db.execute('CREATE TABLE IF NOT EXISTS `settings` (`guild` VARCHAR(250) NOT NULL, `settings` LONGTEXT NOT NULL , PRIMARY KEY (`guild`))')
 
         // Load all settings
         const settingRows = await this.db.execute('SELECT guild, settings FROM settings').then((res) => res[0]);
@@ -53,6 +69,45 @@ class MySQLProvider extends SettingProvider {
 
         }
 
+        // User settings
+        await this.db.execute('CREATE TABLE IF NOT EXISTS `users` (`user` VARCHAR(250) NOT NULL, `settings` LONGTEXT NOT NULL , PRIMARY KEY (`user`))')
+
+        const userRows = await this.db.execute('SELECT user, settings FROM users').then((res) => res[0]);
+        for (const userRow of userRows) {
+            let userSettings
+            try {
+                userSettings = JSON.parse(userRow.settings)
+            } catch (err) {
+                client.emit('warn', `MySQLProvider couldn't parse the settings stored for User ${userRow.user}.`);
+                continue
+            }
+
+            const user = userRow.user ;
+            this.users.setUser(user, userSettings);
+
+            if (!client.users.cache.has(userRow.user)) { continue }
+
+        }
+
+        // Bot settings
+        await this.db.execute('CREATE TABLE IF NOT EXISTS `botconfs` (`indexkey` VARCHAR(250) NOT NULL, `settings` LONGTEXT NOT NULL , PRIMARY KEY (`index`))')
+
+        const indexRows = await this.db.execute('SELECT indexkey, settings FROM botconfs').then((res) => res[0]);
+        for (const indexRow of indexRows){
+            let botSettings
+            try {
+                botSettings = JSON.parse(indexRow.settings)
+            } catch (err) {
+                client.emit('warn', `MySQLProvider couldn't parse the settings stored for Index ${userRow.indexkey}.`);
+                continue
+            }
+
+            const index = indexRow.indexkey;
+            this.botSettings.setBotSettings(index, botSettings)
+
+        }
+
+        this.isReady = true;
 
         // Listen for changes
         this.listeners
@@ -90,10 +145,7 @@ class MySQLProvider extends SettingProvider {
 
                     this.setupGuildGroup(client.guilds.cache.get(guild) || client.guilds.get(guild), group, settings)
                 }
-            })
-            .set('newCoffesion', (content) => {
-
-            })
+            });
 
         for (const [event, listener] of this.listeners) {
             client.on(event, listener)
@@ -240,5 +292,197 @@ class MySQLProvider extends SettingProvider {
 		`)
     }
 
+    // Custom provider
+    // User 
+
+    /**
+     * Obtains a setting for a user
+     * @param {User} user - User the setting is associated with 
+     * @param {string} key - Name of the setting
+     * @param {*} val - Value to default to if the setting isn't set on the user
+     * @return {*}
+     * @abstract
+     */
+    getUser(user, key, val) {
+        const settings = this.users.get(this.constructor.getUserID(user))
+        return (settings ? (typeof settings[key] !== 'undefined' ? settings[key] : val) : val)
+    }
+
+    /**
+     * Sets a setting for a user
+     * @param {User} user - User to associate the setting with 
+     * @param {string} key - Name of the setting
+     * @param {*} val - Value of the setting
+     * @return {Promise<*>} New value of the setting
+     * @abstract
+     */
+    async setUser(user, key, val) {
+        user = this.constructor.getUserID(user);
+        let settings = this.users.getUser(user);
+
+        if (!settings) {
+            settings = {}
+            this.users.setUser(user, settings)
+        }
+
+        settings[key] = val;
+
+        await this.db.execute('REPLACE INTO users VALUES(?, ?)', [user, JSON.stringify(settings)]);
+        return val;
+    }
+
+    /**
+     * Removes a setting from an user
+     * @param {User} user - User the setting is associated with 
+     * @param {string} key - Name of the setting
+     * @return {Promise<*>} Old value of the setting
+     * @abstract
+     */
+    async removeUser(user, key) {
+        user = this.constructor.getUserID(user);
+        const settings = this.users.getUser(user);
+
+        if (!settings || typeof settings[key] === 'undefined') {
+            return undefined
+        }
+
+        const val = settings[key];
+        settings[key] = undefined;
+        await this.db.execute('REPLACE INTO users VALUES(?, ?)', [user, JSON.stringify(settings)])
+
+        return val;
+    }
+
+    /**
+     * Removes all settings of an user
+     * @param {User} user - User to clear the settings of
+     * @return {Promise<void>}
+     * @abstract
+     */
+    async clearUser(user) {
+        user = this.constructor.getUserID(user);
+        if (!this.users.has(user)) return;
+
+        this.users.delete(user);
+        await this.db.execute('DELETE FROM users WHERE guild = ?', [user]);
+    }
+
+    /**
+     * Obtains the ID of the provided user, or throws an error if it isn't valid
+     * @param {User} guild - User to get the ID of
+     * @return {string} ID of the user
+     */
+    static getUserID(user) {
+        if (user instanceof User) return user.id;
+        if (typeof user == 'string' && !isNaN(user)) return user;
+        throw new TypeError('Invalid guild specified. Must be a User instance, user ID.');
+    }
+
+    // Bot settings
+    getBotSettings(index, key, val) {
+        const settings = this.botSettings.get(index);
+        if (!key && !val) return index;
+
+        return settings ? typeof settings[key] === 'undefined' ? val : settings[key] : val;
+    }
+
+    async setBotSettings(index, key, val) {
+        settings = this.botSettings.get(index);
+        if (!settings) {
+            settings = {};
+        }
+
+        settings[key] = val;
+
+        await this.db.execute('REPLACE INTO botconfs VALUES(?, ?)', [index, JSON.stringify(settings)]);
+        return val;
+    }
+
+    async removeBotSettings(index, key) {
+        settings = this.botSettings.get(index);
+        if (!settings) {
+            settings = {};
+        }
+
+        const val = settings[key];
+        settings[key] = undefined;
+
+        await this.db.execute('REPLACE INTO botconfs VALUES(?, ?)', [index, JSON.stringify(settings)])
+        return val;
+    }
+
+    async clearBotSetting(index) {
+        if (!this.bots.has(index)) return;
+
+        this.bots.delete(index);
+        await this.db.execute('DELETE FROM botconfs WHERE indexkey = ?', [index]);
+    }
+
+    // Other
+    getDatabase() {
+        return this.db;
+    }
+
+    async reloadGuildSettings(guild) {
+        try {
+            // const settingRows = await this.db.execute('SELECT guild, settings FROM settings').then((res) => res[0]);
+
+            const result = await this.db.execute('SELECT guild, settings FROM settings WHERE guild = ?', [guild]).then((res) => res[0]);
+            let settings;
+
+            if (!result) {
+                settings = {};
+                await this.db.execute('REPLACE INTO settings VALUES(?, ?)', [guild !== 'global' ? guild : 0, JSON.stringify(settings)]);
+            }
+
+            if (result && result.settings) {
+                settings = result.settings;
+            }
+
+            this.settings.set(guild, settings)
+        } catch (err) {
+            console.warn(`Error while creating data of guild ${guild}`);
+            console.warn(err);
+        }
+    }
+
+    async reloadUserSettings(user){
+        try {
+            const result = await this.db.execute('SELECT user, settings FROM users WHERE user = ?', [user]).then((res) => res[0]);
+            let settings;
+
+            if (!result) {
+                settings = {};
+                await this.db.execute('REPLACE INTO users VALUES(?, ?)', [user, JSON.stringify(settings)]);
+            }
+
+            if (result && result.settings) {
+                settings = result.settings;
+            }
+
+            this.users.setUser(user, settings)
+        } catch (error) {
+            console.warn(`Error while creating data of user ${user}`);
+            console.warn(err);
+        }
+    }
+
+    async reloadBotSettings(index){
+        try {
+            const result = await this.db.execute('SELECT indexkey, settings FROM botconfs WHERE indexkey = ?', [index]).then((res) => res[0]);
+            if (!result){
+                settings = {};
+                await this.db.execute('REPLACE INTO bot onfs VALUES(?, ?)', [index, JSON.stringify(settings)]);
+            }
+
+            if (result && result.settings) {
+                settings = result.settings;
+            }
+
+            this.botSettings.setBotSettings(index, settings)
+        } catch (error) {
+            
+        }
+    }
 }
 module.exports = MySQLProvider;
