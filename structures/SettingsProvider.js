@@ -90,7 +90,7 @@ class MySQLProvider extends SettingProvider {
         }
 
         // Bot settings
-        await this.db.execute('CREATE TABLE IF NOT EXISTS `botconfs` (`indexkey` VARCHAR(250) NOT NULL, `settings` LONGTEXT NOT NULL , PRIMARY KEY (`index`))')
+        await this.db.execute('CREATE TABLE IF NOT EXISTS `botconfs` (`indexkey` VARCHAR(250) NOT NULL, `settings` LONGTEXT NOT NULL , PRIMARY KEY (`indexkey`))')
 
         const indexRows = await this.db.execute('SELECT indexkey, settings FROM botconfs').then((res) => res[0]);
         for (const indexRow of indexRows){
