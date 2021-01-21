@@ -5,7 +5,7 @@ module.exports = class EmojiCMD extends Commando.Command {
         super(client, {
             name: 'emoji',
             memberName: 'emoji',
-            group: 'util',
+            group: 'info',
             description: 'Show basic information of the emoji',
             clientPermissions: ['SEND_MESSAGES'],
             guildOnly: true,
