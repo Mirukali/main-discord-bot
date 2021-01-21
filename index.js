@@ -3,7 +3,7 @@ require("dotenv").config();
 const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
 const mysql = require('mysql2/promise');
-const mysqlProvider = require('commando-provider-mysql')
+const mysqlProvider = require('./structures/SettingsProvider');
 const fs = require('fs');
 const path = require('path');
 const { TOKEN, PREFIX, MYSQL_HOST, MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_DATABASE } = process.env;
@@ -79,4 +79,3 @@ fs.readdir("./events/", (err, files) => {
         delete require.cache[require.resolve(`./events/${file}`)];
     });
 });
-
