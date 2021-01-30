@@ -1,0 +1,18 @@
+{
+  "premium": {
+    "status": false,
+    "bought": [],
+    "end": ""
+  },
+  "lang": "",
+  "inventory": [],
+  "xp": {
+    "amount": 0,
+    "cooldown": ""
+  },
+  "prefix": [],
+  "levelannounce": {
+    "status": false
+  },
+  "credits": 0
+}

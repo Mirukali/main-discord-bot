@@ -1,0 +1,27 @@
+{
+    "premium": {
+        "keys": {
+          "numberofuserkeys": 0,
+          "numberofguildkeys": 0,
+          "redeemeduserkeys": [],
+          "redeemedguildkeys": [],
+          "guildkeys": [],
+          "userkeys": []
+        }
+    },
+    "banlist":{
+        "server": [],
+        "user": []
+    },
+    "blacklist":{
+        "server": [],
+        "user": []
+    },
+    "joinleavechannel": "", 
+    "globalenable": false,
+    "level": {
+        "minxp": 5,
+        "maxxp": 10,
+        "cooldown": 9000000
+    }
+}
