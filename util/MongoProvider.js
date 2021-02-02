@@ -10,7 +10,7 @@ class CustomProvider extends Commando.SettingProvider {
         super();
 
         this.url = `mongodb://${encodeURIComponent(MONGO_USERNAME)}:${encodeURIComponent(MONGO_PASSWORD)}@${encodeURIComponent(MONGO_HOST)}:${encodeURIComponent(MONGO_PORT)}/?authMechanism=DEFAULT&authSource=admin`;
-
+        Object.defineProperty(this, 'client', { value: null, writable: true });
         this.guildSettings = new Map();
         this.userSettings = new Map();
         this.botSettings = new Map();
@@ -615,7 +615,30 @@ class CustomProvider extends Commando.SettingProvider {
         const settings = await this.db.collection('Bots').find({ botconfs: index }).project({ botconfs: 1 })
         return settings;
     }
-    
+    initUserMap(userID){
+        let settings = this.userSettings.get(userID);
+        if (!settings) {
+            settings = {};
+            this.userSettings.set(userID, settings);
+        }
+        return setting;
+    }
+    initGuildMap(serverID){
+        let settings = this.guildSettings.get(serverID);
+        if (!settings) {
+            settings = {};
+            this.guildSettings.set(serverID, settings);
+        }
+        return setting;
+    }
+    initBotMap(index){
+        let settings = this.botSettings.get(index);
+        if(!settings){
+            settings = {};
+            this.botSettings.set(index, settings);
+        }
+        return this.botSettings.get(index);
+    }
 }
 
 module.exports = CustomProvider;
