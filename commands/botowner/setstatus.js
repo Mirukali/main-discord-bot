@@ -1,5 +1,4 @@
 const Command = require('../../structures/Command');
-const { startstatus, stopstatus } = require('../../plugin/autostatus');
 
 module.exports = class SetStatusCMD extends Command {
     constructor(client) {
@@ -20,20 +19,11 @@ module.exports = class SetStatusCMD extends Command {
         })
     }
     run(message, { status }) {
-        if (status == "start") {
-            startstatus(message.client);
-            message.reply('Starting auto set status');
-        }
-        else if (status == "stop") {
-            stopstatus(message.client);
-            message.reply('Stoping auto set status');
-        }
-        else {
-            try {
-                message.client.user.setActivity(status);
-            } catch (error) {
-                message.reply(error);
-            }
+        try {
+            message.client.user.setActivity(status)
+                .then(presence => message.channel.send(`Activity set to ${presence.activities[0].name}`))
+        } catch (error) {
+            message.reply('Error occurred while set activity for bot');
         }
     }
 }
