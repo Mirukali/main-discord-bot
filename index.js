@@ -55,11 +55,6 @@ client.registry.registerCommandsIn(path.join(__dirname + '/commands'));
 client.commands = new Discord.Collection();
 client.events = new Discord.Collection();
 
-const CommandFile = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-for (const file of CommandFile) {
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.name, command);
-}
 fs.readdir("./events/", (err, files) => {
     if (err) return console.error(err);
     files.forEach(file => {
