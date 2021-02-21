@@ -13,6 +13,11 @@ const client = global.client = new Commando.Client({
     commandPrefix: PREFIX,
     owner: ['289018503606960128', '337071802373242892'],
     invite: 'https://discord.gg/8yfv46W',
+    ws: {
+        intents: ['GUILDS', 'GUILD_MEMBERS', 'GUILD_PRESENCES', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS', 'DIRECT_MESSAGE_TYPING', 'GUILD_BANS', 'GUILD_EMOJIS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_MESSAGE_TYPING', 'GUILD_VOICE_STATES', 'GUILD_WEBHOOKS', 'GUILD_INVITES', 'GUILD_INTEGRATIONS']
+    },
+    partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION'],
+
 });
 
 new Commando.FriendlyError(
