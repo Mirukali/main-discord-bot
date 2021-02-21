@@ -15,16 +15,6 @@ const client = global.client = new Commando.Client({
     invite: 'https://discord.gg/8yfv46W',
 });
 
-mysql.createConnection({
-	host: MYSQL_HOST,
-	user: MYSQL_USERNAME,
-	password: MYSQL_PASSWORD,
-	database: MYSQL_DATABASE
-}).then((db) => {
-    console.log('Database connected.');
-	client.setProvider(new mysqlProvider(db))
-})
-
 new Commando.FriendlyError(
     'Please contact Owner: lexson270400@gmail.com'
 );
