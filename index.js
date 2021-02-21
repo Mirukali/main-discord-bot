@@ -41,8 +41,7 @@ client.registry
 client.registry.registerGroups(command_group);
 client.registry.registerCommandsIn(path.join(__dirname + '/commands'));
 
-//Get and load command and event list.
-client.commands = new Discord.Collection();
+//Get and load event list.
 client.events = new Discord.Collection();
 
 fs.readdir("./events/", (err, files) => {
