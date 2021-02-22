@@ -1,5 +1,4 @@
 const exec = require('child_process').exec;
-process.cwd()
 
 module.exports = async (client) => {
     console.log(`Logged in as ${client.user.tag}!`);
