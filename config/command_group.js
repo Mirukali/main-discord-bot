@@ -4,8 +4,5 @@ module.exports = [
 	["botowner", "BotOwner"],
 	["fun", "Fun"],
 	["info", "Info"],
-	["other", "Other"],
-	["moderation", "Moderation"],
-	["voice", "Voice"],
-	["werewolf", "Werewolf"]
+	["other", "Other"]
 ];
