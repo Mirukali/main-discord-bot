@@ -40,16 +40,10 @@ class CustomProvider extends Commando.SettingProvider {
         const { userSettings } = this;
         const botSettingsCollection = this.db.collection('Bot');
         const { botSettings } = this;
-        const TagCollection = this.db.collection('Tags');
-        const WarningsCollection = this.db.collection('Warnings');
-        const ConfessionCollection = this.db.collection('Confession');
 
         await guildSettingsCollection.createIndex('guildID', { unique: true });
         await userSettingsCollection.createIndex('userID', { unique: true });
         await botSettingsCollection.createIndex('botconfs', { unique: true });
-        await TagCollection.createIndex('serverID', { unique: true });
-        await WarningsCollection.createIndex('ID', { unique: true });
-        await ConfessionCollection.createIndexes('serverID', { unique: true });
 
         /* eslint guard-for-in: 0 */
         for (const guild in client.guilds.cache.array()) {
@@ -593,15 +587,6 @@ class CustomProvider extends Commando.SettingProvider {
     }
     getGuildCollection() {
         return this.db.collection('Guilds')
-    }
-    getTagCollection() {
-        return this.db.collection('Tags');
-    }
-    getWarningsCollection(){
-        return this.db.collection('Warnings');
-    }
-    getCfsCollection(){
-        return this.db.collection('Confession');
     }
     async getUserSetting(userID) {
         const settings = await this.db.collection('Users').find({ userID: userID }).project({ settings: 1 })
