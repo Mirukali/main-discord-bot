@@ -1,27 +1,13 @@
 {
   "prefix": "",
-  "subprefix": [],
-  "modlog": {
-    "status": false,
-    "channel": ""
-  },
-  "log": "false",
-  "logchannel": "",
   "lang": "",
-  "cfs": {
-    "status": "off",
-    "key": "",
-    "channel": "",
-    "count": 0
-  },
   "premium": {
     "status": false,
     "bought": [],
     "end": ""
   },
-  "voicechannel": [],
   "watchbot": {
-    "status": "on",
+    "status": "off",
     "channel": "",
     "mode": "all",
     "list": {

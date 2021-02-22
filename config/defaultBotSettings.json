@@ -17,11 +17,5 @@
         "server": [],
         "user": []
     },
-    "joinleavechannel": "", 
-    "globalenable": false,
-    "level": {
-        "minxp": 5,
-        "maxxp": 10,
-        "cooldown": 9000000
-    }
+    "globalenable": false
 }
