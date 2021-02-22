@@ -62,3 +62,20 @@ fs.readdir("./events/", (err, files) => {
         delete require.cache[require.resolve(`./events/${file}`)];
     });
 });
+
+// Automatic check update from repository every 30s.
+setInterval(() => {
+    exec(`git pull`, (error, stdout) => {
+        let response = (error || stdout);
+        if (!error) {
+            if (response.includes("Already up to date.")) {
+                //console.log('Bot already up to date. No changes since last pull')
+            } else {
+                client.channels.cache.get('594803017249718282').send('**[AUTOMATIC]** \nNew update on GitHub. Pulling. \n\nLogs: \n```' + response + "```" + "\n\n\n**Restarting bot**")
+                setTimeout(() => {
+                    process.exit();
+                }, 1000)
+            };
+        }
+    })
+}, 30000)
