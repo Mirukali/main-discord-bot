@@ -1,27 +1,54 @@
-const { PREFIX, MODMAILCHAN } = process.env;
-const { MessageEmbed } = require('discord.js');
-const modmail = require('../plugin/modmail');
+const guildsettingskeys = require('../config/defaultServerSettings.json');
+const usersettingskeys = require('../config/defaultUserSettings.json');
+const botsettingskeys = require('../config/defaultBotSettings.json');
 
 module.exports = (client, message) => {
     try {
         // Ignore bot
         if (message.author.bot) return;
-        // gets the command file and runs the execute function
-        const args = message.content.slice(PREFIX.length).trim().split(' ');
-        const command = args.shift().toLowerCase();
-        if (message.channel.type === "dm") {
-            modmail(message);
-            return;
-        }
-        // Run command in server only
-        if (client.commands.get(command) && message.channel.type != "dm" && message.content.startsWith(PREFIX)) {
-            if (client.commands.get(command).mod) {
-                client.commands.get(command).run(message, args);
+        // Everything will trigger when provider is ready
+        if (!client.provider.isReady) return;
 
-            } else {
-                // if the command doesn't exist, notify the user
-                message.channel.send(`${command} command does not exist`);
+        if (client.provider.getGuild(message.guild.id)) {
+            const settings = client.provider.guildSettings.get(message.guild.id);
+            for (const key in guildsettingskeys) {
+                if (!settings[key] && typeof settings[key] === 'undefined') {
+                    settings[key] = guildsettingskeys[key];
+                }
             }
+            await client.provider.setGuildComplete(message.guild.id, settings);
+        }
+        if (client.provider.getUser(message.author.id)) {
+            const settings = client.provider.userSettings.get(message.author.id);
+            for (const key in usersettingskeys) {
+                if (!settings[key] && typeof settings[key] === 'undefined') {
+                    settings[key] = usersettingskeys[key];
+                }
+
+                if (typeof usersettingskeys[key] === 'object') {
+                    for (const key2 in usersettingskeys[key]) {
+                        if (!settings[key][key2]) {
+                            settings[key][key2] = usersettingskeys[key][key2];
+                        }
+                    }
+                }
+            }
+            await message.client.provider.setUserComplete(message.author.id, settings);
+        }
+        else {
+            await message.client.provider.reloadUser(message.author.id);
+        }
+        if (client.provider.getBotsettings('botconfs')) {
+            const settings = client.provider.botSettings.get('botconfs');
+            for (const key in botsettingskeys) {
+                if (!settings[key]) {
+                    settings[key] = botsettingskeys[key];
+                }
+            }
+            await message.client.provider.setBotconfsComplete('botconfs', settings);
+        }
+        else {
+            await message.client.provider.setBotconfsComplete('botconfs', botsettingskeys);
         }
 
     } catch (err) {
