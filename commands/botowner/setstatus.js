@@ -8,6 +8,7 @@ module.exports = class SetStatusCMD extends Command {
             group: 'botowner',
             description: 'Set bot status',
             ownerOnly: true,
+            hidden: true,
             aliases: ['sstatus'],
             args: [
                 {
