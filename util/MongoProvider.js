@@ -588,42 +588,6 @@ class CustomProvider extends Commando.SettingProvider {
     getGuildCollection() {
         return this.db.collection('Guilds')
     }
-    async getUserSetting(userID) {
-        const settings = await this.db.collection('Users').find({ userID: userID }).project({ settings: 1 })
-        return settings;
-    }
-    async getServerSetting(serverID) {
-        const settings = await this.db.collection('Servers').find({ userID: serverID }).project({ settings: 1 })
-        return settings;
-    }
-    async getBotSetting(index) {
-        const settings = await this.db.collection('Bots').find({ botconfs: index }).project({ botconfs: 1 })
-        return settings;
-    }
-    initUserMap(userID){
-        let settings = this.userSettings.get(userID);
-        if (!settings) {
-            settings = {};
-            this.userSettings.set(userID, settings);
-        }
-        return setting;
-    }
-    initGuildMap(serverID){
-        let settings = this.guildSettings.get(serverID);
-        if (!settings) {
-            settings = {};
-            this.guildSettings.set(serverID, settings);
-        }
-        return setting;
-    }
-    initBotMap(index){
-        let settings = this.botSettings.get(index);
-        if(!settings){
-            settings = {};
-            this.botSettings.set(index, settings);
-        }
-        return this.botSettings.get(index);
-    }
 }
 
 module.exports = CustomProvider;
