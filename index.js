@@ -1,4 +1,5 @@
 // Require part
+require('module-alias/register')
 require("dotenv").config();
 const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
@@ -7,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const { TOKEN, PREFIX } = process.env;
 const command_group = require('./config/command_group');
+const exec = require('child_process').exec;
 
 const client = global.client = new Commando.Client({
     commandPrefix: PREFIX,
@@ -25,7 +27,6 @@ new Commando.FriendlyError(
 
 client.login(TOKEN);
 
-client.on('debug', (...x) => console.info('[DEBUG]', ...x));
 client.on("warn", (e) => console.warn(e));
 client.on('error', (...x) => console.error('[CLIENT ERROR]', ...x));
 client.ws.on('close', (...x) => log('[WS CLOSE]', ...x));
