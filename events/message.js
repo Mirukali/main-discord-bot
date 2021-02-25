@@ -2,7 +2,7 @@ const guildsettingskeys = require('../config/defaultServerSettings.json');
 const usersettingskeys = require('../config/defaultUserSettings.json');
 const botsettingskeys = require('../config/defaultBotSettings.json');
 
-module.exports = (client, message) => {
+module.exports = async (client, message) => {
     try {
         // Ignore bot
         if (message.author.bot) return;
