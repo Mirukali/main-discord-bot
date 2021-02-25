@@ -1,0 +1,40 @@
+{
+  "name": "alikuxac-bot",
+  "version": "1.0.0",
+  "description": "Alikuxac Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mirukali/alikuxac-bot.git"
+  },
+  "keywords": [
+    "modmail",
+    "discord-bot"
+  ],
+  "author": "Alikuxac",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mirukali/alikuxac-bot/issues"
+  },
+  "homepage": "https://github.com/Mirukali/alikuxac-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "discord.js-commando": "git+https://github.com/discordjs/Commando.git",
+    "dotenv": "^8.2.0",
+    "humanize-duration": "^3.25.1",
+    "module-alias": "^2.2.2",
+    "moment-duration-format": "^2.3.2",
+    "mongodb": "^3.6.3",
+    "nekos.life": "^2.0.7"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@config": "./config",
+    "@plugin": "./plugin",
+    "@structures": "./structures",
+    "@util": "./util"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "prefix": "",
+  "lang": "",
+  "premium": {
+    "status": false,
+    "bought": [],
+    "end": ""
+  },
+  "watchbot": {
+    "status": "off",
+    "channel": "",
+    "mode": "all",
+    "list": {
+      "watch": [],
+      "ignore": []
+    }
+  }
+}
