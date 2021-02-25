@@ -8,7 +8,8 @@ module.exports = class CheckUpdateCMD extends Command {
             memberName: 'check-update',
             group: 'botowner',
             description: 'Check update from officical github',
-            ownerOnly: true
+            ownerOnly: true,
+            hidden: true
         })
     }
     run(message, args) {

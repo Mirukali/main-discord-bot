@@ -8,6 +8,7 @@ module.exports = class StopCMD extends Command {
             group: 'botowner',
             description: "Stop a bot",
             ownerOnly: true,
+            hidden: true
         })
     }
     run(message, args) {
