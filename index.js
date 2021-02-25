@@ -2,11 +2,10 @@
 require("dotenv").config();
 const Discord = require('discord.js');
 const Commando = require('discord.js-commando');
-const mysql = require('mysql2/promise');
-const mysqlProvider = require('./structures/SettingsProvider');
+const MongoProvider = require('./util/MongoProvider');
 const fs = require('fs');
 const path = require('path');
-const { TOKEN, PREFIX, MYSQL_HOST, MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_DATABASE } = process.env;
+const { TOKEN, PREFIX } = process.env;
 const command_group = require('./config/command_group');
 
 const client = global.client = new Commando.Client({
@@ -45,6 +44,8 @@ client.registry
     });
 client.registry.registerGroups(command_group);
 client.registry.registerCommandsIn(path.join(__dirname + '/commands'));
+
+client.setProvider(new MongoProvider());
 
 //Get and load event list.
 client.events = new Discord.Collection();
