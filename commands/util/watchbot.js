@@ -88,7 +88,7 @@ module.exports = class WatchBotCMD extends Command {
             case 'watch':
                 if (settings == undefined || settings.status == 'off') return message.reply(`This server haven't turn on feature yet.`);
                 if (settings.mode == 'all') return message.reply(`You can't add bot to watch list because the current mode is \`all\``);
-                const botwatch = message.mentions.members.first() || message.guild.members.cache.get(args.id);
+                const botwatch = message.mentions.members.first() || message.guild.members.cache.get(args.value);
                 if (!botwatch) { return message.reply(`Member not found. Please try again.`); }
                 if (!botwatch.user.bot) { return message.reply(`This user is not bot.`); }
                 if (!settings.list.watch.includes(botwatch.user.id)) {
@@ -113,7 +113,7 @@ module.exports = class WatchBotCMD extends Command {
 
             case 'ignore':
                 if (settings == undefined || settings.status == 'off') return message.reply(`This server haven't turn on feature yet.`);
-                const botignore = message.mentions.members.first() || message.guild.members.cache.get(args.id);
+                const botignore = message.mentions.members.first() || message.guild.members.cache.get(args.value);
                 if (!botignore) { return message.reply(`Member not found. Please try again.`); }
                 if (!botignore.user.bot) { return message.reply(`This user is not bot.`); }
                 if (!settings.list.ignore.includes(botignore.user.id)) {
@@ -139,7 +139,7 @@ module.exports = class WatchBotCMD extends Command {
 
             case 'channel':
                 if (settings == undefined || settings.status == 'off') return message.reply(`This server haven't turn on feature yet.`);
-                if (!args.id) {
+                if (!args.value) {
                     if (settings.channel) {
                         settings.channel = '';
                         message.client.provider.setGuild(message.guild.id, 'watchbot', settings);
@@ -149,7 +149,7 @@ module.exports = class WatchBotCMD extends Command {
                     }
                     return;
                 }
-                const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args.id);
+                const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args.value);
                 if (!channel) return message.reply(`Invalid channel. Please try again`);
 
                 try {
@@ -164,12 +164,12 @@ module.exports = class WatchBotCMD extends Command {
             case 'mode':
                 const modelist = ['specific', 'all'];
                 if (settings == undefined || settings.status == 'off') return message.reply(`This server haven't turn on feature yet.`);
-                if (!modelist.includes(args.id)) return message.reply(`Invalid mode. Only support \`specific\` and \`all\` `);
+                if (!modelist.includes(args.value)) return message.reply(`Invalid mode. Only support \`specific\` and \`all\` `);
 
                 try {
-                    settings.mode = args.id;
+                    settings.mode = args.value;
                     message.client.provider.setGuild(message.guild.id, 'watchbot', settings);
-                    message.channel.send(`Set mode \`${args.id}\` successful`);
+                    message.channel.send(`Set mode \`${args.value}\` successful`);
                 } catch (err) {
                     message.channel.send(`Error while setting mode.`);
                 }
@@ -177,7 +177,7 @@ module.exports = class WatchBotCMD extends Command {
 
             case 'role':
                 if (settings == undefined || settings.status == 'off') return message.reply(`This server haven't turn on feature yet.`);
-                if (!args.id) {
+                if (!args.value) {
                     if (settings.role) {
                         settings.role = '';
                         message.client.provider.setGuild(message.guild.id, 'watchbot', settings);
@@ -188,7 +188,7 @@ module.exports = class WatchBotCMD extends Command {
                     }
                     return;
                 }
-                const rolem = message.mentions.roles.first() || message.guild.roles.cache.find(role => role.name.toLowerCase().includes(args.id.toLowerCase())) || message.guid.roles.cache.find(role => role.id === args.id);
+                const rolem = message.mentions.roles.first() || message.guild.roles.cache.find(role => role.name.toLowerCase().includes(args.value.toLowerCase())) || message.guid.roles.cache.find(role => role.id === args.value);
                 if (!rolem) return message.reply('Invalid role.');
 
                 try {
